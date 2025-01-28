@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "./node_modules/.bin/http-server -p 18080 -c-1"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

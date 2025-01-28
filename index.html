@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="./js/config.js"></script>
+    <title>Browser Phone</title>
+    <script src="https://sdk.twilio.com/js/client/v1.14/twilio.js"></script>
+    <script>
+        let device;
+
+        async function setupDevice() {
+            try {
+                const response = await fetch(`${config.apiBaseUrl}/voice/token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                device = new Twilio.Device();
+                
+                await device.setup(data.token, {
+                    debug: true,
+                    warnings: true,
+                    allowIncomingWhileBusy: true
+                });
+
+                setupEventListeners();
+            } catch (error) {
+                console.error('Error setting up device:', error);
+                updateStatus('Error: ' + error.message);
+            }
+        }
+
+        function setupEventListeners() {
+            device.on('error', function(error) {
+                console.error('Twilio Device Error:', error);
+                updateStatus('Error: ' + error.message);
+            });
+
+            device.on('ready', function() {
+                updateStatus('Ready to make and receive calls');
+            });
+
+            device.on('incoming', function(connection) {
+                updateStatus('Incoming call from ' + connection.parameters.From);
+                document.getElementById('answer-controls').style.display = 'block';
+                document.getElementById('call-controls').style.display = 'none';
+
+                // Answer button handler
+                document.getElementById('button-answer').onclick = function() {
+                    connection.accept();
+                    updateStatus('Call connected');
+                    document.getElementById('answer-controls').style.display = 'none';
+                    document.getElementById('hangup-controls').style.display = 'block';
+                };
+                
+                // Reject button handler
+                document.getElementById('button-reject').onclick = function() {
+                    connection.reject();
+                    updateStatus('Call rejected');
+                    resetUI();
+                };
+            });
+
+            device.on('connect', function(connection) {
+                console.log('Call connected:', connection);
+                updateStatus('Call in progress...');
+                document.getElementById('call-controls').style.display = 'none';
+                document.getElementById('hangup-controls').style.display = 'block';
+                document.getElementById('answer-controls').style.display = 'none';
+            });
+
+            device.on('disconnect', function(connection) {
+                console.log('Call disconnected:', connection);
+                updateStatus('Call ended');
+                resetUI();
+            });
+        }
+
+        async function makeCall() {
+            const phoneNumber = document.getElementById('phone-number').value;
+            
+            try {
+                await fetch(`${config.apiBaseUrl}/voice/outbound-calls`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `To=${encodeURIComponent(phoneNumber)}`
+                });
+            } catch (error) {
+                console.error('Error making call:', error);
+                updateStatus('Error making call: ' + error.message);
+            }
+        }
+
+        function hangUp() {
+            device.disconnectAll();
+        }
+
+        function updateStatus(message) {
+            document.getElementById('call-status').textContent = message;
+        }
+
+        function resetUI() {
+            document.getElementById('call-controls').style.display = 'block';
+            document.getElementById('hangup-controls').style.display = 'none';
+            document.getElementById('answer-controls').style.display = 'none';
+        }
+
+        window.onload = setupDevice;
+    </script>
+    <style>
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .control-group { margin: 20px 0; }
+        button { margin: 0 5px; padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Browser Phone</h1>
+        <div id="call-status">Loading...</div>
+        
+        <div id="call-controls" class="control-group">
+            <input type="text" id="phone-number" placeholder="Enter phone number (e.g. +12182745397)"/>
+            <button onclick="makeCall()">Call</button>
+        </div>
+        
+        <div id="answer-controls" class="control-group" style="display:none">
+            <button id="button-answer">Answer Call</button>
+            <button id="button-reject">Reject</button>
+        </div>
+        
+        <div id="hangup-controls" class="control-group" style="display:none">
+            <button onclick="hangUp()">Hang Up</button>
+        </div>
+    </div>
+</body>
+</html>
