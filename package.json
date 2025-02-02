@@ -3,6 +3,7 @@
     "start": "./node_modules/.bin/http-server -p 18080 -c-1"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "http-server": "^14.1.1"
   }
 }
