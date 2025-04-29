@@ -1,0 +1,109 @@
+/* Browser Phone Styles */
+
+/* Base Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+/* Container */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography */
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Status Display */
+#call-status {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Control Groups */
+.control-group {
+    margin: 20px 0;
+    text-align: center;
+}
+
+/* Form Elements */
+input[type="text"] {
+    padding: 10px;
+    width: 70%;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 3px rgba(66, 133, 244, 0.3);
+}
+
+/* Buttons */
+button {
+    margin: 0 5px;
+    padding: 10px 16px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #3367d6;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Action Specific Buttons */
+#button-reject,
+#button-hangup {
+    background-color: #db4437;
+}
+
+#button-reject:hover,
+#button-hangup:hover {
+    background-color: #c53929;
+}
+
+/* Media Queries */
+@media (max-width: 640px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+        width: auto;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+    }
+    
+    button {
+        margin: 5px;
+        width: 100%;
+    }
+}

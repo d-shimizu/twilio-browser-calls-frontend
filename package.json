@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "./node_modules/.bin/http-server -p 18080 -c-1"
+    "start": "./node_modules/.bin/http-server -a 0.0.0.0 -p 18080 -c-1"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
